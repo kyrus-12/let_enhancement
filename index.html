@@ -144,6 +144,27 @@
                 padding-bottom:0.5rem;
                 width:100%;
             }
+            .column .branch-buttons{
+                display:flex;
+                flex-direction:column;
+                gap:1rem;
+                width:100%;
+                align-items:center;
+            }
+            .column-button{
+                max-width:100%;
+                font-size:1rem;
+                padding:0.9rem 1.5rem;
+                gap:5px;
+            }
+            #lessonDisplay{
+                display:none;
+                flex-direction:column;
+                animation:fadeIn 0.4s ease;
+            }
+            #lessonDisplay.visible{
+                display:flex;
+            }
         </style>
     </head>
     <body>
