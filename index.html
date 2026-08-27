@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang en>
+<html lang="en">
     <head>
-        <meta CHARSET="UTF-8"/>
+        <meta charset="UTF-8" 
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <title>MAJORSHIP LET ENHANCEMENT</title>
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -552,11 +552,11 @@
             }
 
             const mainMenu = document.getElementById('mainMenu');
-            const lessonDisplay = document.getElementById('lessonDisplay');
+            const lessonDisplay = document.getElementById('lesson-display');
             const lessonContent = document.getElementById('lessonContent');
             const lessonTitle = document.getElementById('lessonTitle');
 
-            const quizDisplay = document.getElementById('quizDisplay');
+            const quizDisplay = document.getElementById('quiz-display');
             const quizContent = document.getElementById('quizContent');
             const quizTitle = document.getElementById('quizTitle');
 
@@ -620,7 +620,7 @@
             }
 
             function selectOption(element){
-                const card = element.closest('quiz-card');
+                const card = element.closest('.quiz-card');
                 if (card.dataset.answered === 'true') return;
                 card.dataset.answered = 'true';
 
@@ -635,7 +635,7 @@
                 if (selectedRank === 1){
                     element.classList.add('correct');
                     feedback.textContent = "✅ Correct! Rank 1 is the right answer. " + explanation;
-                    feedback.className = 'feedback show correct.msg';
+                    feedback.className = 'feedback show correct-msg';
                 } else {
                     element.classList.add('wrong');
                     options.forEach(opt => {
@@ -680,7 +680,7 @@
                     }
                     feedback.className = 'feedback show info-msg';
                 }
-                else if (type === 'show-answer'){
+                else if (type === 'showAnswer'){
                     card.dataset.answered = 'true';
 
                     options.forEach(opt => {
@@ -689,7 +689,7 @@
                             opt.classList.add('correct');
                         }
                     });
-                    card.querySelectorAll('.lifeline-button').forEach(b => b.disabled = true);
+                    card.querySelectorAll('.lifeline-btn').forEach(b => b.disabled = true);
 
                     feedback.textContent = `Correct answer revealed: Rank 1! ${explanation}`;
                     feedback.className = 'feedback show correct-msg';
