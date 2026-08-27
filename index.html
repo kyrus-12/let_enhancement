@@ -268,7 +268,44 @@
                 min-width:22px;
                 text-align:center;
             }
-
+            .quiz-option.eliminated .rank-badge{
+                background:rgab(0,0,0,0.2);
+                color:#888;
+            }
+            .lifeline-buttons{
+                display:flex;
+                gap:0.6rem;
+                margin:1.2rem 0 0.5rem;
+                flex-wrap:wrap;
+                justify-content:center;
+            }
+            .lifeline-btn{
+                background:linear-gradient(135deg, #6A1B9A, #8E24AA);
+                border:none;
+                border-radius:20px;
+                padding:0.55rem 1.1rem;
+                font-size:0.82rem;
+                font-weight:600;
+                color:white;
+                cursor:pointer;
+                box-shadow:0 3px 10px rgba(0,0,0,0.3);
+                transition:all 0.3s ease;
+                letter-spacing:0.02em;
+                flex:1 1 auto;
+                min-width:100px;
+                max-width:160px;
+            }
+            .lifeline-btn:hover:not(.disabled){
+                transform:translateY(-2px);
+                box-shadow:0 6px 18px rgba(106,27,154,0.5);
+                background:linear-gradient(135deg, #7B21B2, #9C27B0);
+            }
+            .lifeline-btn.disabled{
+                opacity:0.35;
+                cursor:not-allowed;
+                transform:none;
+                filter:grayscale(0.8);
+            }
         </style>
     </head>
     <body>
