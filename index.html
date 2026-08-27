@@ -237,6 +237,37 @@
                 transform:translateX(5px);
                 background:linear-gradient(135deg, #46627C, #5B8C5A);
             }
+            .quiz-option.correct{
+                background:linear-gradient(135deg, #2d6a4f, #40916c);
+                border-color:#52b788;
+            }
+            .quiz-option.wrong{
+                background:linear-gradient(135deg, #9d0208, #d00000);
+                border-color:#ff4d6d;
+            }
+            .quiz-option.disabled{
+                pointer-events:none;
+                opacity:0.7;
+            }
+            .quiz-option.eliminated{
+                background:#555;
+                opacity:0.35;
+                text-decoration:line-through;
+                border-color:#777;
+                pointer-events:none;
+                transform:none;
+                filter:grayscale(1);
+            }
+            .rank-badge{
+                font-size:0.7rem;
+                background:rgba(0,0,0,0.35);
+                padding:0.15rem 0.5rem;
+                border-radius:10px;
+                color:#ccc;
+                font-weight:700;
+                min-width:22px;
+                text-align:center;
+            }
 
         </style>
     </head>
