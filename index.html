@@ -354,7 +354,86 @@
                 text-transform:capitalize;
                 letter-spacing:0.03em;
             }
-            
+            button.nav-back-btn:hover{
+                background:linear-gradient(135deg, #5C9FEF, #7B21B2);
+                box-shadow:0 8px 25px rgba(var(00primary-color-rgb), 0.6);
+                transform:translateY(-2px);
+            }
+            button.nav-back-btn:active{
+                transform:translateY(0);
+            }
+            @keyframes fadeIn{
+                from{
+                    opacity:0;
+                    transform:translateY(10px);
+                } to {
+                    opacity:1;
+                    transform:translateY(0);
+                }
+            }
+            ::-webkit-scrollbar{
+                width:8px;
+            }
+            ::-webkit-scrollbar-track{
+                background:var(--bg-medium);
+                border-radius:5px;
+            }
+            ::-webkit-scrollbar-thumb{
+                background:var(--primary-color);
+                border-radius:4px;
+            }
+            ::-webkit-scrollbar-thumb:hover{
+                background:#6FA66E;
+            }
+            @media (max-width:768px){
+                header{
+                    font-size:1.6rem;
+                    min-height:55px;
+                }
+                main{
+                    margin-top:80px;
+                    padding:1.2rem;
+                    width:95%;
+                }
+                h2{
+                    font-size:1.5rem;
+                }
+                .two-columns{
+                    grid-template-columns:1fr;
+                    gap:1.5rem;
+                }
+                button{
+                    padding:0.8rem 1.2rem;
+                    font-size:1rem;
+                }
+                .lifeline-btn{
+                    font-size:0.78rem;
+                    padding:0.5rem 0.8rem;
+                }
+            }
+            @media (max-width:480px){
+                header{
+                    font-size:1.4rem;
+                    min-height:50px;
+                }
+                main{
+                    margin-top:70px;
+                    padding:0.8rem;
+                }
+                h2{
+                    font-size:1.3rem;
+                }
+                .column{
+                    padding:1rem;
+                }
+                .lesson-card, .quiz-card{
+                    padding:1rem;
+                }
+                .quiz-option{
+                    padding:0.7rem 1rem;
+                    font-size:0.9rem;
+                }
+            }
         </style>
     </head>
     <body>
@@ -399,7 +478,30 @@
                 </div>
             </section>
         </main>
-
-
+        <script>
+            const lessons = {
+                "Biology":[
+                    {
+                        title:"Genetics",
+                        text:"Genetics is the study of heredity.",
+                        image:"https:i.imgur.com/.jpg"
+                    }
+                ],
+                "Chemistry":[
+                    {
+                        title:"Atoms",
+                        text:"Atom is the smallest unit of matter.",
+                        image:"https:i.imgur.com/.jpg"
+                    }
+                ],
+                "Physics":[
+                    {
+                      title:"Force and Motion",
+                        text:"Force is a push or pull.",
+                        image:"https:i.imgur.com/.jpg"
+                    }  
+                ]
+            }
+        </script>
     </body>
 </html>
