@@ -646,7 +646,61 @@
                 }
             }
 
-            
+            function useLifeLine(btn, type){
+                const card = btn.closest('.quiz-card');
+                if (card.dataset.answered === 'true') return;
+
+                const feedback = card.querySelector('.feedback');
+                const options = Array.from(card.querySelectorAll('.quiz-option'));
+                const explanation = card.dataset.explanation;
+
+                btn.disabled = true;
+                if (type === 'eliminate 2'){
+                    const wrongOptions = options.filter(opt => parseInt(opt.dataset.rank) > 1 && !opt.classList.contains('eliminated'));
+                    wrongOptions.sort((a, b) => parseInt(b.dataset.rank) - parseInt(a.dataset.rank));
+                    const toEliminate = wrongOptions.slice(0, Math.min(2, wrongOptions.length));
+
+                    toEliminate.forEach(opt => opt.classList.add('eliminated'));
+
+                    const eliminateRanks = toEliminate.map(opt => `Rank ${opt.dataset.rank}`).join(' and ');
+                    feedback.textContent = `Eliminated ${eliminateRanks} - the two worst choices. ${explanation}`;
+                    feedback.className = 'feedback show info-msg';
+                } 
+                else if (type === 'eliminate 1'){
+                    const wrongOptions = options.filter(opt => parseInt(opt.dataset.rank) > 1 && !opt.classList.contains('eliminated'));
+
+                    if (wrongOptions.length > 0){
+                        wrongOptions.sort((a, b) => parseInt(b.dataset.rank) - parseInt(a.dataset.rank));
+                        const toEliminate = wrongOptions[0];
+                        toEliminate.classList.add('eliminated');
+
+                        feedback.textContent = `Eliminated Rank ${toEliminate.dataset.rank} - the next worst choice. ${explanation}`;
+                    } else {
+                        feedback.textContent = `No more wrong answers to eliminate! ${explanation}`;
+                    }
+                    feedback.className = 'feedback show info-msg';
+                }
+                else if (type === 'show-answer'){
+                    card.dataset.answered = 'true';
+
+                    options.forEach(opt => {
+                        opt.classList.add('disabled');
+                        if (parseInt(opt.dataset.rank) === 1){
+                            opt.classList.add('correct');
+                        }
+                    });
+                    card.querySelectorAll('.lifeline-button').forEach(b => b.disabled = true);
+
+                    feedback.textContent = `Correct answer revealed: Rank 1! ${explanation}`;
+                    feedback.className = 'feedback show correct-msg';
+                }
+            }
+
+            function goBackToMenu(){
+                lessonDisplay.classList.remove('visible');
+                quizDisplay.classList.remove('visible');
+                mainMenu.style.display = 'block';
+            }
         </script>
     </body>
 </html>
