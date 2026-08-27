@@ -306,6 +306,55 @@
                 transform:none;
                 filter:grayscale(0.8);
             }
+            .feedback{
+                margin-top:0.8rem;
+                padding:0.8rem 1rem;
+                border-radius:12px;
+                font-weight:600;
+                display:none;
+                line-height:1.5;
+                font-size:0.95rem;
+            }
+            .feedback.show{
+                display:block;
+                animation:fadeIn 0.3s ease;
+            }
+            .feedback.correct-msg{
+                background-color:rgba(45,106,79,0.25);
+                color:#95d5b2;
+                border:1px solid #52b788;
+            }
+            .feedback.wrong-msg{
+                background-color:rgba(157,2,8,0.25);
+                color:#ffccd5;
+                border:1pz solid #ff4d6d;
+            }
+            .feedback.info-msg{
+                background-color:rgba(74,144,226,0.2);
+                color:#aed9ff;
+                border:1px solid #4A90E2;
+            }
+            .back-btn-container{
+                margin-top:1.5rem;
+                text-align:center;
+            }
+            button.nav-back-btn{
+                background:linear-gradient(135deg, #4A90E2, #6A1B9A);
+                border:none;
+                border-radius:var(--border-radius-button);
+                padding:0.8rem 1.5rem;
+                font-size:1rem;
+                font-weight:600;
+                color:white;
+                cursor:pointer;
+                box-shadow:var(--shadow-light);
+                transition:all 0.3s ease;
+                width:100%;
+                max-width:200px;
+                text-transform:capitalize;
+                letter-spacing:0.03em;
+            }
+            
         </style>
     </head>
     <body>
@@ -343,7 +392,7 @@
             </section>
 
             <section id="quiz-display" role="region" aria-label="Quiz Content">
-                <h2 id="quizTitle">Lesson</h2>
+                <h2 id="quizTitle">Quiz</h2>
                 <div id="quizContent"></div>
                 <div class="back-button-container">
                     <button type="button" class="nav-back-btn" onclick="goBackToMenu()">Back to Menu</button>
