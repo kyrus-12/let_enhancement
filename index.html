@@ -551,6 +551,101 @@
                 return arr;
             }
 
+            const mainMenu = document.getElementById('mainMenu');
+            const lessonDisplay = document.getElementById('lessonDisplay');
+            const lessonContent = document.getElementById('lessonContent');
+            const lessonTitle = document.getElementById('lessonTitle');
+
+            const quizDisplay = document.getElementById('quizDisplay');
+            const quizContent = document.getElementById('quizContent');
+            const quizTitle = document.getElementById('quizTitle');
+
+            function openLesson(branch){
+                mainMenu.style.display = 'none';
+                lessonDisplay.classList.add('visible');
+                lessonTitle.textContent = branch + " Lessons";
+
+                lessonContent.innerHTML = '';
+                const branchLessons = lessons[branch] || [];
+
+                branchLessons.forEach((item, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'lesson-card';
+                    card.style.animationDelay = (index * 0.12) + 's';
+                    card.innerHTML = `
+                    <h3>${item.title}</h3>
+                    <p>${item.text}</p>
+                    <img src="${item.image}" alt="${item.title}" onerror="this.style.display='none'">
+                    `;
+                    lessonContent.appendChild(card);
+                });
+            }
+
+            function openQuiz(branch){
+                mainMenu.style.display = 'none';
+                quizDisplay.classList.add('visible');
+                quizTitle.textContent = branch + " Quiz";
+
+                quizContent.innerHTML = '';
+                const branchQuizzes = quizzes[branch] || [];
+
+                const shuffledQuestions = shuffleArray(branchQuizzes);
+
+                shuffledQuestions.forEach((q, index) => {
+                    const shuffledOptions = shuffleArray(q.options);
+
+                    const card = document.createElement('div');
+                    card.className = 'quiz-card';
+                    card.style.animationDelay = (index * 0.12) + 's';
+                    card.dataset.explanation = q.explanation;
+                    card.dataset.answered = 'false';
+
+                    const optionsHtml = shuffledOptions.map((opt, i) =>`
+                    <div class="quiz-option" data-rank="${opt.rank}" data-text="${opt.text.replace(/"/g, '&quot;')}" onclick="selectOption(this)">
+                        <strong>${String.fromCharCode(65 + i)}.</strong> ${opt.text}
+                        </div>`).join('');
+                        
+                        card.innerHTML = `
+                        <h4>Q${index + 1}. ${q.question}</h4>
+                        <div class="quiz-options">${optionsHtml}</div>
+                        <div class="lifeline-buttons">
+                        <button type="button" class="lifeline-btn eliminate-2" onclick="useLifeLine(this, 'eliminate 2')">Eliminate 2</button>
+                        <button type="button" class="lifeline-btn eliminate-1" onclick="useLifeLine(this, 'eliminate 1')">Eliminate 1</button>
+                        <button type="button" class="lifeline-btn show-answer" onclick="useLifeLine(this, 'showAnswer')">Correct Answer</button>
+                        </div>
+                        <div class="feedback"></div>
+                        `;
+                        quizContent.appendChild(card);
+                });
+            }
+
+            function selectOption(element){
+                const card = element.closest('quiz-card');
+                if (card.dataset.answered === 'true') return;
+                card.dataset.answered = 'true';
+
+                const options = card.querySelectorAll('.quiz-option');
+                const feedback = card.querySelector('.feedback');
+                const explanation = card.dataset.explanation;
+                const selectedRank = parseInt(element.dataset.rank);
+
+                options.forEach(opt => opt.classList.add('disabled'));
+                card.querySelectorAll('.lifeline-btn').forEach(btn => btn.disabled = true);
+
+                if (selectedRank === 1){
+                    element.classList.add('correct');
+                    feedback.textContent = "✅ Correct! Rank 1 is the right answer. " + explanation;
+                    feedback.className = 'feedback show correct.msg';
+                } else {
+                    element.classList.add('wrong');
+                    options.forEach(opt => {
+                        if (parseInt(opt.dataset.rank) === 1) opt.classList.add('correct');
+                    });
+                    feedback.textContent = `❌ Incorrect. You chose Rank ${selectedRank}. Rank 1 is the correct answer. ` + explanation;
+                    feedback.className = 'feedback show wrong-msg';
+                }
+            }
+
             
         </script>
     </body>
