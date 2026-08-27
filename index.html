@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang en>
+    <head>
+        <meta CHARSET="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <title>MAJORSHIP LET ENHANCEMENT</title>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+        <style>
+            
+        </style>
+    </head>
+    <body>
+        <header>MAJORSHIP LET ENHANCEMENT</header>
+        <main>
+            <section id="mainMenu" role="region" aria-label="Main Menu">
+                <h2>What would you like to do?</h2>
+                <div class="two-columns">
+                <div class="column">
+                    <h3>📚Lessons</h3>
+                    <div class="branch-buttons">
+                        <button onclick="openLesson('Biology')" aria-label="Biology Lesson">Biology</button>
+                        <button onclick="openLesson('Chemistry')" aria-label="Chemistry Lesson">Chemistry</button>
+                        <button onclick="openLesson('Physics')" aria-label="Physics Lesson">Physics</button>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <h3>❓Quizzes</h3>
+                    <div class="barnch-buttons">
+                        <button onclick="openQuiz('Biology')" aria-label="Biology Quiz">Biology</button>
+                        <button onclick="openQuiz('Chemistry')" aria-label="Chemistry Quiz">Chemistry</button>
+                        <button onclick="openQuiz('Physics')" aria-label="Physics Quiz">Physics</button>
+                    </div>
+                </div>
+                </div>
+            </section>
+
+            <section id="lesson-display" role="region" aria-label="Lesson Content">
+                <h2 id="lessonTitle">Lesson</h2>
+                <div id="lessonContent"></div>
+                <div class="back-button-container">
+                    <button type="button" class="nav-back-btn" onclick="goBackToMenu()">Back to Menu</button>
+                </div>
+            </section>
+
+            <section id="quiz-display" role="region" aria-label="Quiz Content">
+                <h2 id="quizTitle">Lesson</h2>
+                <div id="quizContent"></div>
+                <div class="back-button-container">
+                    <button type="button" class="nav-back-btn" onclick="goBackToMenu()">Back to Menu</button>
+                </div>
+            </section>
+        </main>
+
+
+    </body>
+</html>
