@@ -232,6 +232,12 @@
                 align-items:center;
                 gap:0.6rem;
             }
+            .quiz-option:hover:not(.disabled):not(.eliminated){
+                border-color:var(--accent-color);
+                transform:translateX(5px);
+                background:linear-gradient(135deg, #46627C, #5B8C5A);
+            }
+
         </style>
     </head>
     <body>
@@ -251,7 +257,7 @@
 
                 <div class="column">
                     <h3>❓Quizzes</h3>
-                    <div class="barnch-buttons">
+                    <div class="branch-buttons">
                         <button onclick="openQuiz('Biology')" aria-label="Biology Quiz">Biology</button>
                         <button onclick="openQuiz('Chemistry')" aria-label="Chemistry Quiz">Chemistry</button>
                         <button onclick="openQuiz('Physics')" aria-label="Physics Quiz">Physics</button>
