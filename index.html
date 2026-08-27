@@ -16,8 +16,8 @@
                 --user-color:white;
                 --bg-dark:#2C3E50;
                 --bg-medium:#34495E;
-                --bg-light:#4A63F7;
-                --font-family:'Inter', 'Sogue UI', Tahoma, Geneva, Verdana, sans-serif;
+                --bg-light:#4A637F;
+                --font-family:'Inter', 'Sogoe UI', Tahoma, Geneva, Verdana, sans-serif;
                 --border-radius-main:18px;
                 --border-radius-button:30px;
                 --shadow-light:0 4px 15px rgba(0,0,0,0.4);
@@ -151,7 +151,7 @@
                 width:100%;
                 align-items:center;
             }
-            .column-button{
+            .column button{
                 max-width:100%;
                 font-size:1rem;
                 padding:0.9rem 1.5rem;
@@ -295,12 +295,12 @@
                 min-width:100px;
                 max-width:160px;
             }
-            .lifeline-btn:hover:not(.disabled){
+            .lifeline-btn:hover:not(:disabled){
                 transform:translateY(-2px);
                 box-shadow:0 6px 18px rgba(106,27,154,0.5);
                 background:linear-gradient(135deg, #7B21B2, #9C27B0);
             }
-            .lifeline-btn.disabled{
+            .lifeline-btn:disabled{
                 opacity:0.35;
                 cursor:not-allowed;
                 transform:none;
@@ -334,7 +334,7 @@
                 color:#aed9ff;
                 border:1px solid #4A90E2;
             }
-            .back-btn-container{
+            .back-button-container{
                 margin-top:1.5rem;
                 text-align:center;
             }
@@ -356,7 +356,7 @@
             }
             button.nav-back-btn:hover{
                 background:linear-gradient(135deg, #5C9FEF, #7B21B2);
-                box-shadow:0 8px 25px rgba(var(primary-color-rgb), 0.6);
+                box-shadow:0 8px 25px rgba(var(--primary-color-rgb), 0.6);
                 transform:translateY(-2px);
             }
             button.nav-back-btn:active{
