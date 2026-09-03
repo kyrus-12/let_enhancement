@@ -333,6 +333,7 @@
                 line-height:1.4;
                 width:100%;
                 box-sizing:border-box;
+                text-decoration:none;
             }
             .option-explanation.show{
                 display:block;
@@ -859,6 +860,7 @@
 
                 if (card.dataset.timerInterval){
                     clearInterval(parseInt(card.dataset.timerInterval));
+                    delete card.dataset.timerInterval;
                 }
 
                 options.forEach(opt => opt.classList.add('disabled'));
@@ -897,6 +899,7 @@
 
                 if (card.dataset.timeInterval){
                     clearInterval(parseInt(card.dataset.timerInterval));
+                    delete card.dataset.timerInterval;
                 }
 
                 element.classList.add('correct');
@@ -999,14 +1002,15 @@
                 card.dataset.foundInElimination = 'false';
 
                 const timerDisplay = card.querySelector('.timer-display');
-                const phaseText = card.query('.phase-text');
-                const playBtn = card.query('.play-btn');
+                const phaseText = card.querySelector('.phase-text');
+                const playBtn = card.querySelector('.play-btn');
 
                 timerDisplay.style.display = 'none';
                 timerDisplay.textContent = '⏱️ 00:00';
-                phaseText.style.textContent = '';
+                phaseText.textContent = '';
                 playBtn.disabled = false;
                 playBtn.innerHTML = '▶';
+                lifelineContainer.style.display = '';
 
                 const options = card.querySelectorAll('.quiz-option');
                 options.forEach(opt => {
@@ -1026,10 +1030,10 @@
 
             function goBackToMenu(){
                 document.querySelectorAll('.quiz-card').forEach(card => {
-                    resetPlayMode(card);
                     if (card.dataset.timerInterval) {
                         clearInterval(parseInt(card.dataset.timerInterval));
                     }
+                    resetPlayMode(card);
                 });
                 lessonDisplay.classList.remove('visible');
                 quizDisplay.classList.remove('visible');
