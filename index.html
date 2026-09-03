@@ -897,7 +897,7 @@
                 card.dataset.answered = 'true';
                 card.dataset.foundInElimination = 'true';
 
-                if (card.dataset.timeInterval){
+                if (card.dataset.timerInterval){
                     clearInterval(parseInt(card.dataset.timerInterval));
                     delete card.dataset.timerInterval;
                 }
