@@ -206,6 +206,67 @@
                 animation:fadeIn 0.5s ease forwards;
                 opacity:0;
             }
+            .quiz-card.red-result{
+                background:linear-gradient(135deg, #7b1a1a, #9d0208);
+                box-shadow:0 8px 30px rgba(157,2,8,0.5);
+            }
+            .quiz-card.green-result{
+                background:linear-gradient(135deg, #1a5c3a, #2d6a4f);
+                box-shadow:0 8px 30px rgba(45,106,79,0.5);
+            }
+            .quiz-card-header{
+                display:flex;
+                justify-content:space-between;
+                align-items:flex-start;
+                margin-bottom:0.5rem;
+                gap:1rem;
+            }
+            .play-btn{
+                background:linear-gradient(135deg, #FF6B35, #F7931E);
+                border:none;
+                border-radius:50%;
+                width:44px;
+                height:44px;
+                min-width:44px;
+                padding:0;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                font-size:1.1rem;
+                box-shadow:0 4px 12px rgba(255,107,53,0.4);
+                transition:all 0.3s ease;
+                flex-shrink:0;
+            }
+            .play-btn:not(:disabled){
+                transform:scale(1.1) translateY(-2px);
+                box-shadow:0 6px 18px rgba(255,107,53,0.6);
+            }
+            .play-btn:disbaled{
+                opacity:0.5;
+                cursor:not-allowed;
+                transform:none;
+            }
+            .timer-display{
+                font-size:1.3rem;
+                font-weight:700;
+                color:var(--accent-color);
+                text-align:center;
+                margin:0.5rem 0;
+                font-variant-numeric:(tabular-nums);
+                letter-spacing:0.05em;
+            }
+            .phase-text{
+                text-align:center;
+                font-weight:600;
+                font-size:1rem;
+                margin:0.5rem 0;
+                padding:0.6rem 1rem;
+                border-radius:12px;
+                background:rgba(0,0,0,0.2);
+                color:#ae9dff;
+                border:1px solid rgba(74,144,226,0.3);
+                animation:fadeIn 0.4s ease;
+            }
             .quiz-card h4{
                 color:var(--accent-color);
                 margin-top:0;
@@ -257,6 +318,36 @@
                 pointer-events:none;
                 transform:none;
                 filter:grayscale(1);
+            }
+            .quiz-option.revealed{
+                pointer-events:none;
+            }
+            .quiz-explanation{
+                font-size:0.85rem;
+                color:#ccc;
+                margin-top:0.2rem;
+                padding:0.4rem 0.8rem;
+                background:rgba(0,0,0,0.25);
+                border-radius:8px;
+                display:none;
+                line-height:1.4;
+                width:100%;
+                box-sizing:border-box;
+            }
+            .option-explanation.show{
+                display:block;
+                animation:slideDown 0.4s ease;
+            }
+            @keyframes slideDown{
+                from {
+                    opacity:0;
+                    max-height:0;
+                    transform:translateY(-5px);
+                } to {
+                    opacity:1;
+                    max-height:200px;
+                    transform:translateY(0);
+                }
             }
             .rank-badge{
                 font-size:0.7rem;
@@ -409,6 +500,12 @@
                 .lifeline-btn{
                     font-size:0.78rem;
                     padding:0.5rem 0.8rem;
+                }
+                .play-button{
+                    width:38px;
+                    height:38px;
+                    min-width:38px;
+                    font-size:1rem;
                 }
             }
             @media (max-width:480px){
@@ -599,14 +696,25 @@
                     card.style.animationDelay = (index * 0.12) + 's';
                     card.dataset.explanation = q.explanation;
                     card.dataset.answered = 'false';
+                    card.dataset.inPlayMode = 'false';
+                    card.dataset.phase = '0';
+                    card.dataset.foundInElimination = 'false';
 
                     const optionsHtml = shuffledOptions.map((opt, i) =>`
-                    <div class="quiz-option" data-rank="${opt.rank}" data-text="${opt.text.replace(/"/g, '&quot;')}" onclick="selectOption(this)">
+                    <div class="quiz-option" data-rank="${opt.rank}" data-text="${opt.text.replace(/"/g, '&quot;')}" data-explanation="${opt.explanation ? opt.explanation.replace(/"/g, '&quot;') : ''}" onclick="selectOption(this)">
+                        <div style="display:flex; align-items:center; gap:0.6rem; width:100%;">
                         <strong>${String.fromCharCode(65 + i)}.</strong> ${opt.text}
+                        </div>
+                        <div class="option-explanation">${opt.explanation || ''}</div>
                         </div>`).join('');
                         
                         card.innerHTML = `
+                        <div class="quiz-card-header">
                         <h4>Q${index + 1}. ${q.question}</h4>
+                        <button type="button" class="play-btn" onclick="startPlayMode(this)" title="Play Elimination Game">▶︎</button>
+                        </div>
+                        <div class="timer-display" style="display:none;">⏱️ 00:00</div>
+                        <div class="phase-text" style="display:none;"></div>
                         <div class="quiz-options">${optionsHtml}</div>
                         <div class="lifeline-buttons">
                         <button type="button" class="lifeline-btn eliminate-2" onclick="useLifeLine(this, 'eliminate 2')">Eliminate 2</button>
@@ -619,35 +727,212 @@
                 });
             }
 
+            function startPlayMode(btn){
+                const card = btn.closest('.quiz-card');
+                if (card.dataset.inPlayMode === 'true') return;
+
+                card.dataset.inPlayMode = 'true';
+                card.dataset.phase = '1';
+                btn.disabled = true;
+                btn.innerHTML = '⏸';
+
+                const lifelineContainer = card.querySelector('.lifeline-buttons');
+                lifelineContainer.style.display = 'none';
+                const timerDisplay = card.querySelector('.timer-display');
+                timerDisplay.style.display = 'block';
+                const phaseText = card.querySelector('.phase-text');
+                phaseText.style.display = 'block';
+                phaseText.textContent = '🙅‍♂️ Phase 1: Eliminate two of the choices';
+
+                let seconds = 0;
+                const timeInterval = setInterval(() => {
+                    seconds++;
+                    const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+                    const secs = (seconds % 60).toString().padStart(2, '0');
+                    timerDisplay.textContent = `⏱️ ${mins}:${secs}`;
+                }, 1000);
+                card.dataset.timerInterval = timeInterval;
+            }
+
+            function advancePhase(card){
+                const phase = parseInt(card.dataset.phase);
+                const phaseText = card.querySelector('.phase-text');
+                const eliminatedCount = card.querySelectorAll('.quiz-option.eliminated').length;
+
+                if (phase === 1 && eliminatedCount >= 2){
+                    card.dataset.phase = '2';
+                    phaseText.textContent = '🙅‍♀️ Phase 2: Next, eliminate one of the choices';
+                    return true;
+                } else if (phase === 2 && eliminatedCount >= 3){
+                    card.dataset.phase = '3';
+                    phaseText.textContent = 'Phase 3: Revealing explanations one by one';
+
+                    const options = Array.from(card.querySelectorAll('.quiz-option'));
+                    showExplanationsOneByOne(card, options);
+                    return true;
+                }
+                return false;
+            }
+
+            function showExplanationsOneByOne(card, options){
+                const activeOptions = options.filter(opt => !opt.classList.contains('eliminated'));
+                const eliminatedOptions = options.filter(opt => opt.classList.contains('eliminated'));
+                const orderedOptions = [...eliminatedOptions, ...activeOptions];
+
+                let currentIndex = 0;
+                const phaseText = card.querySelector('.phase-text');
+
+                function showNextExplanation(){
+                    if (currentIndex >= orderedOptions.length){
+                        setTimeout(() => {
+                            card.dataset.phase = '4';
+                            phaseText.textContent = 'All explanations revealed you may now select the correct answer.';
+
+                            orderedOptions.forEach(opt => {
+                                if (!opt.classList.contains('eliminated')){
+                                    opt.classList.remove('revealed');
+                                }
+                            });
+                        }, 1500);
+                        return;
+                    }
+
+                    const opt = orderedOptions[currentIndex];
+                    const expDiv = opt.querySelector('.option-explanation');
+                    const rank = opt.dataset.rank;
+
+                    if (expDiv){
+                        expDiv.classList.add('show');
+                        opt.classList.add('revealed');
+
+                        const label = opt.querySelector('strong').textContent;
+                        phaseText.textContent = `⍟ ${label} Rank ${rank}: ${expDiv.textContent}`;
+                    }
+                    currentIndex++;
+                    setTimeout(showNextExplanation, 2000);
+                }
+                setTimeout(showNextExplanation, 600);
+            }
+
+            function showExplanationForOption(opt, delay = 0){
+                setTimeout(() => {
+                    const expDiv = opt.querySelector('.option-explanation');
+                    if (expDiv){
+                        expDiv.classList.add('show');
+                    }
+                }, delay);
+            }
+
             function selectOption(element){
                 const card = element.closest('.quiz-card');
-                if (card.dataset.answered === 'true') return;
-                card.dataset.answered = 'true';
-
+                const isPlayMode = card.dataset.inPlayMode === 'true';
+                const phase = parseInt(card.dataset.phase);
                 const options = card.querySelectorAll('.quiz-option');
                 const feedback = card.querySelector('.feedback');
-                const explanation = card.dataset.explanation;
                 const selectedRank = parseInt(element.dataset.rank);
+                const isCorrect = selectedRank === 1; 
 
-                options.forEach(opt => opt.classList.add('disabled'));
-                card.querySelectorAll('.lifeline-btn').forEach(btn => btn.disabled = true);
+                if (!isPlayMode) {
+                if (card.dataset.answered === 'true') return;
+                const explanation = card.dataset.expalanation;
 
-                if (selectedRank === 1){
+                if (isCorrect){
+                    card.dataset.answered = 'true';
+                    options.forEach(opt => opt.classList.add('disabled'));
+                    card.querySelectorAll('.lifeline-btn').forEach(btn => btn.disabled = true);
+
                     element.classList.add('correct');
+                    showExplanationForOption(element, 300);
+
                     feedback.textContent = "✅ Correct! Rank 1 is the right answer. " + explanation;
                     feedback.className = 'feedback show correct-msg';
                 } else {
-                    element.classList.add('wrong');
-                    options.forEach(opt => {
-                        if (parseInt(opt.dataset.rank) === 1) opt.classList.add('correct');
+                    element.classList.add('eliminated');
+                    showExplanationForOption(element, 200);
+
+                    feedback.textContent = `❌ Rank ${selectedRank} is incorrect. It's explanation is shown above.`;
+                    feedback.className = 'feedback show wrong-msg';  
+                }
+                return;
+            }
+
+            if (phase === 3){
+                if (card.dataset.answered === 'true') return;
+                card.dataset.answered = 'true';
+
+                if (card.dataset.timerInterval){
+                    clearInterval(parseInt(card.dataset.timerInterval));
+                }
+
+                options.forEach(opt => opt.classList.add('disabled'));
+
+                if (isCorrect){
+                    element.classList.add('correct');
+                    showExplanationForOption(element, 300);
+                    card.classList.add('green-result');
+                    feedback.textContent = "✅ Correct! You found the right answer.";
+                    feedback.className = 'feedback show correct-msg';
+
+                    const eliminated  = Array.from(card.querySelectorAll('.quiz-option.eliminated'));
+                    eliminated.forEach((opt, i) => {
+                        setTimeout(() => showExpalanationForOption(opt, 0), (i + 1) * 400);
                     });
-                    feedback.textContent = `❌ Incorrect. You chose Rank ${selectedRank}. Rank 1 is the correct answer. ` + explanation;
+                } else {
+                    element.classList.add('wrong');
+                    showExplanationForOption(element, 300);
+                    options.forEach(opt => {
+                        if (parseInt(opt.dataset.rank) === 1) {
+                            opt.classList.add('correct');
+                            showExplanationForOption(opt, 600);
+                        }
+                    });
+                    card.classList.add('red-result');
+                    feedback.textContent = `❌ Incorrect. You chose Rank ${selectedRank}.`;
                     feedback.className = 'feedback show wrong-msg';
                 }
+                return;
             }
+
+            if (element.classList.contains('eliminated') || element.classList.contains('revealed')) return;
+            if (isCorrect){
+                card.dataset.answered = 'true';
+                card.dataset.foundInElimination = 'true';
+
+                if (card.dataset.timeInterval){
+                    clearInterval(parseInt(card.dataset.timeInterval));
+                }
+
+                element.classList.add('correct');
+                showExplanationForOption(element, 300);
+
+                options.forEach(opt => {
+                    opt.classList.add('disabled', 'revealed');
+                    if (parseInt(opt.dataset.rank) !== 1){
+                        opt.classList.add('eliminated');
+                    }
+                });
+
+                card.classList.add('red-result');
+
+                const phaseText = card.querySelector('.phase-text');
+                phaseText.textContent = '🚨 You found the answer during elimination. Round ended!';
+
+                feedback.textContent = "⚠️ You clicked the correct answer during the elimination.";
+                feedback.className = 'feedback show wrong-msg';
+                return;
+            }
+            element.classList.add('eliminated');
+            showExpalanationForOption(element, 200);
+            advancePhase(card);
+            }
+
 
             function useLifeLine(btn, type){
                 const card = btn.closest('.quiz-card');
+                const isPlayMode = card.dataset.inPlayMode === 'true';
+
+                if (isPlayMode) return;
+
                 if (card.dataset.answered === 'true') return;
 
                 const feedback = card.querySelector('.feedback');
@@ -660,10 +945,15 @@
                     wrongOptions.sort((a, b) => parseInt(b.dataset.rank) - parseInt(a.dataset.rank));
                     const toEliminate = wrongOptions.slice(0, Math.min(2, wrongOptions.length));
 
-                    toEliminate.forEach(opt => opt.classList.add('eliminated'));
+                    toEliminate.forEach((opt, idx) => {
+                        setTimeout(() => {
+                            opt.classList.add('eliminated');
+                            showExplanationForOption(opt, 100);
+                        }, idx * 800);
+                    });
 
                     const eliminateRanks = toEliminate.map(opt => `Rank ${opt.dataset.rank}`).join(' and ');
-                    feedback.textContent = `Eliminated ${eliminateRanks} - the two worst choices. ${explanation}`;
+                    feedback.textContent = `Eliminated ${eliminateRanks}.. Their explaantions will appear one by one.`;
                     feedback.className = 'feedback show info-msg';
                 } 
                 else if (type === 'eliminate 1'){
@@ -673,8 +963,9 @@
                         wrongOptions.sort((a, b) => parseInt(b.dataset.rank) - parseInt(a.dataset.rank));
                         const toEliminate = wrongOptions[0];
                         toEliminate.classList.add('eliminated');
+                        showExplanationForOption(toEliminate, 200);
 
-                        feedback.textContent = `Eliminated Rank ${toEliminate.dataset.rank} - the next worst choice. ${explanation}`;
+                        feedback.textContent = `Eliminated Rank ${toEliminate.dataset.rank}. Its explanation is shown above.`;
                     } else {
                         feedback.textContent = `No more wrong answers to eliminate! ${explanation}`;
                     }
@@ -687,6 +978,7 @@
                         opt.classList.add('disabled');
                         if (parseInt(opt.dataset.rank) === 1){
                             opt.classList.add('correct');
+                            showExplnationForOption(opt, 300);
                         }
                     });
                     card.querySelectorAll('.lifeline-btn').forEach(b => b.disabled = true);
@@ -697,6 +989,11 @@
             }
 
             function goBackToMenu(){
+                document.querySelectorAll('.quiz-card').forEach(card => {
+                    if (card.dataset.timerInterval) {
+                        clearInterval(parseInt(card.dataset.timerInterval));
+                    }
+                });
                 lessonDisplay.classList.remove('visible');
                 quizDisplay.classList.remove('visible');
                 mainMenu.style.display = 'block';
