@@ -605,36 +605,33 @@
                     {
                         question:"What does DNA stands for?",
                         options: [
-                            { text: "Deoxyribonucleic Acid", rank:1},
-                            { text: "Dinucleic Acid", rank:3},
-                            { text: "Double Helix Acid", rank:2},
-                            { text: "Dynamic Acid", rank:4}
+                            { text: "Deoxyribonucleic Acid", rank:1, explanation: "DNA stands for Deoxyribonucleic Acid"},
+                            { text: "Dinucleic Acid", rank:3, explanation: "Dinucleic sounds close but is wrong"},
+                            { text: "Double Helix Acid", rank:2, explanation: "Double Helix describes the shape not the name."},
+                            { text: "Dynamic Acid", rank:4, explanation: "Dynamic Acid is completely made up"}
                         ],
-                        explanation: "DNA stands for Deoxyribonucleic Acid, Rank 4 (Dynamic Acid) is completely made up, Rank 3 (Dinucleic) sounds close but is wrong, Rank 2 (Double Helix), describes the shape not the name."
                     },
                 ],
                 "Chemistry":[
                     {
                         question:"What is the smallest unit of matter that retains an element identity?",
                         options: [
-                            { text: "Molecule", rank:3},
-                            { text: "Atom", rank:1},
-                            { text: "Electron", rank:2},
-                            { text: "Proton", rank:4}
+                            { text: "Molecule", rank:3, explanation: "A molecule is made of multiple atoms"},
+                            { text: "Atom", rank:1, explanation: "The atom is the smallest unit keeping an elements identity"},
+                            { text: "Electron", rank:2, explanation: "An electron is just a subatomic particle"},
+                            { text: "Proton", rank:4, explanation: "A proton is just part of the nucleus"}
                         ],
-                        explanation: "The atom is the smallest unit keeping an elements identity . An electron (Rank 2) is just a subatomic particle. A molecule (Rank 3) is made of multiple atoms. A proton (Rank 4) is just part oof the nucleus."
                     },
                 ],
                 "Physics":[
                     {
                         question:"What is the force that pulls object toward the Earth?",
                         options: [
-                            { text: "Magnetism", rank:3},
-                            { text: "Friction", rank:2},
-                            { text: "Gravity", rank:1},
-                            { text: "Inertia", rank:4}
+                            { text: "Magnetism", rank:3, explanation: "Magnetism attracts magnetic materials"},
+                            { text: "Friction", rank:2, explanation: "Friction opposites motion"},
+                            { text: "Gravity", rank:1, explanation: "Gravity pulls object towards the Earth"},
+                            { text: "Inertia", rank:4, explanation: "Inertia is resistance"}
                         ],
-                        explanation: "Gravity pulls object towards the Earth. Friction (Rank 2) opposites motion. Magnetism (Rank 3) attracts magnetic materials. Inertia (Rank 4) is resistance."
                     },
                 ]
             };
@@ -856,7 +853,7 @@
                 return;
             }
 
-            if (phase === 3){
+            if (phase >= 3){
                 if (card.dataset.answered === 'true') return;
                 card.dataset.answered = 'true';
 
