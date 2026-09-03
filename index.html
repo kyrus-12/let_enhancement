@@ -985,7 +985,7 @@
                     });
                     card.querySelectorAll('.lifeline-btn').forEach(b => b.disabled = true);
 
-                    feedback.textContent = `Correct answer revealed: Rank 1! ${explanation}`;
+                    feedback.textContent = `Correct answer revealed.`;
                     feedback.className = 'feedback show correct-msg';
                 }
             }
@@ -1034,11 +1034,11 @@
                     if (card.dataset.timerInterval) {
                         clearInterval(parseInt(card.dataset.timerInterval));
                      }
+                    resetPlayMode(card);
                 });
                 lessonDisplay.classList.remove('visible');
                 quizDisplay.classList.remove('visible');
                 mainMenu.style.display = 'block';
-                resetPlayMode(card);
             }
         </script>
     </body>
