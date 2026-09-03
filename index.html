@@ -748,7 +748,7 @@
                     const secs = (seconds % 60).toString().padStart(2, '0');
                     timerDisplay.textContent = `⏱️ ${mins}:${secs}`;
                 }, 1000);
-                card.dataset.timerInterval = timeInterval;
+                card.dataset.timerInterval = timerInterval;
             }
 
             function advancePhase(card){
@@ -803,7 +803,7 @@
                         opt.classList.add('revealed');
 
                         const label = opt.querySelector('strong').textContent;
-                        phaseText.textContent = `⍟ ${label} Rank ${rank}: ${expDiv.textContent}`;
+                        phaseText.textContent = `${label} ${expDiv.textContent}`;
                     }
                     currentIndex++;
                     setTimeout(showNextExplanation, 2000);
@@ -831,7 +831,7 @@
 
                 if (!isPlayMode) {
                 if (card.dataset.answered === 'true') return;
-                const explanation = card.dataset.expalanation;
+                const explanation = card.dataset.explanation;
 
                 if (isCorrect){
                     card.dataset.answered = 'true';
@@ -841,13 +841,13 @@
                     element.classList.add('correct');
                     showExplanationForOption(element, 300);
 
-                    feedback.textContent = "✅ Correct! Rank 1 is the right answer. " + explanation;
+                    feedback.textContent = "✅ Correct! It is the right answer. " + explanation;
                     feedback.className = 'feedback show correct-msg';
                 } else {
                     element.classList.add('eliminated');
                     showExplanationForOption(element, 200);
 
-                    feedback.textContent = `❌ Rank ${selectedRank} is incorrect. It's explanation is shown above.`;
+                    feedback.textContent = `❌ Incorrect. The explanation is shown above.`;
                     feedback.className = 'feedback show wrong-msg';  
                 }
                 return;
@@ -872,7 +872,7 @@
 
                     const eliminated  = Array.from(card.querySelectorAll('.quiz-option.eliminated'));
                     eliminated.forEach((opt, i) => {
-                        setTimeout(() => showExpalanationForOption(opt, 0), (i + 1) * 400);
+                        setTimeout(() => showExplanationForOption(opt, 0), (i + 1) * 400);
                     });
                 } else {
                     element.classList.add('wrong');
@@ -896,7 +896,7 @@
                 card.dataset.foundInElimination = 'true';
 
                 if (card.dataset.timeInterval){
-                    clearInterval(parseInt(card.dataset.timeInterval));
+                    clearInterval(parseInt(card.dataset.timerInterval));
                 }
 
                 element.classList.add('correct');
@@ -919,7 +919,7 @@
                 return;
             }
             element.classList.add('eliminated');
-            showExpalanationForOption(element, 200);
+            showExplanationForOption(element, 200);
             advancePhase(card);
             }
 
@@ -928,7 +928,9 @@
                 const card = btn.closest('.quiz-card');
                 const isPlayMode = card.dataset.inPlayMode === 'true';
 
-                if (isPlayMode) return;
+                if (isPlayMode) {
+                    resetPlayMode(card);
+                }
 
                 if (card.dataset.answered === 'true') return;
 
@@ -975,7 +977,7 @@
                         opt.classList.add('disabled');
                         if (parseInt(opt.dataset.rank) === 1){
                             opt.classList.add('correct');
-                            showExplnationForOption(opt, 300);
+                            showExplanationForOption(opt, 300);
                         }
                     });
                     card.querySelectorAll('.lifeline-btn').forEach(b => b.disabled = true);
@@ -985,8 +987,46 @@
                 }
             }
 
+            function resetPlayMode(card){
+                if (card.dataset.timerInterval){
+                    clearInterval(parseInt(card.dataset.timerInterval));
+                    delete card.dataset.timerInterval;
+                }
+
+                card.dataset.inPlayMode = 'false';
+                card.dataset.phase = '0';
+                card.dataset.answered = 'false';
+                card.dataset.foundInElimination = 'false';
+
+                const timerDisplay = card.querySelector('.timer-display');
+                const phaseText = card.query('.phase-text');
+                const playBtn = card.query('.play-btn');
+
+                timerDisplay.style.display = 'none';
+                timerDisplay.textContent = '⏱️ 00:00';
+                phaseText.style.textContent = '';
+                playBtn.disabled = false;
+                playBtn.innerHTML = '▶';
+
+                const options = card.querySelectorAll('.quiz-option');
+                options.forEach(opt => {
+                    opt.classList.remove('eliminated', 'revealed', 'disabled', 'correct', 'wrong');
+                    const expDiv = opt.querySelector('.option-explanation');
+                    if (expDiv) expDiv.classList.remove('show');
+
+                });
+
+                    const feedback = card.querySelector('.feedback');
+                    feedback.className = 'feedback';
+                    feedback.textContent = '';
+                    card.classList.remove('red-result', 'green-result');
+
+                    card.querySelectorAll('.lifeline-btn').forEach(b => b.disabled = false);
+            }
+
             function goBackToMenu(){
                 document.querySelectorAll('.quiz-card').forEach(card => {
+                    resetPlayMode(card);
                     if (card.dataset.timerInterval) {
                         clearInterval(parseInt(card.dataset.timerInterval));
                     }
