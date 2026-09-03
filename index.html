@@ -1033,12 +1033,12 @@
                 document.querySelectorAll('.quiz-card').forEach(card => {
                     if (card.dataset.timerInterval) {
                         clearInterval(parseInt(card.dataset.timerInterval));
-                    }
-                    resetPlayMode(card);
+                     }
                 });
                 lessonDisplay.classList.remove('visible');
                 quizDisplay.classList.remove('visible');
                 mainMenu.style.display = 'block';
+                resetPlayMode(card);
             }
         </script>
     </body>
