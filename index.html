@@ -241,7 +241,7 @@
                 transform:scale(1.1) translateY(-2px);
                 box-shadow:0 6px 18px rgba(255,107,53,0.6);
             }
-            .play-btn:disbaled{
+            .play-btn:disabled{
                 opacity:0.5;
                 cursor:not-allowed;
                 transform:none;
@@ -878,7 +878,7 @@
                     if (currentIndex >= orderedOptions.length){
                         setTimeout(() => {
                             card.dataset.phase = '4';
-                            phaseText.textContent = 'All explanations revealed you may now select the correct answer.';
+                            phaseText.textContent = 'All explanations revealed.';
 
                             orderedOptions.forEach(opt => {
                                 if (!opt.classList.contains('eliminated')){
