@@ -728,6 +728,7 @@
                         ],
                     },
                     
+                    
                 ],
             };
 
@@ -822,6 +823,27 @@
             function startPlayMode(btn){
                 const card = btn.closest('.quiz-card');
                 if (card.dataset.inPlayMode === 'true') return;
+
+                if (card.dataset.timerInterval){
+                    clearInterval(parseInt(card.dataset.timerInterval));
+                    delete card.dataset.timerInterval;
+                }
+
+                card.dataset.answered = 'false';
+                card.dataset.foundInElimination = 'false';
+                card.dataset.phase = '0';
+
+                const options = card.querySelectorAll('.quiz-option');
+                options.forEach(opt => {
+                    opt.classList.remove('eliminated', 'revealed', 'disabled', 'correct', 'wrong');
+                    const expDiv = opt.querySelector('.option-explanation');
+                    if (expDiv) expDiv.classList.remove('show');
+                });
+
+                const feedback =  card.querySelector('.feedback');
+                feedback.className = 'feedback';
+                feedback.textContent = '';
+                card.classList.remove('red-result', 'green-result');
 
                 card.dataset.inPlayMode = 'true';
                 card.dataset.phase = '1';
